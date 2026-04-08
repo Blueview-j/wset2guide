@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSET Level 2 – Interactive Study Guide</title>
+<style>
+  :root {
+    --sidebar-bg: #6B1010;
+    --sidebar-hover: #8B1A1A;
+    --sidebar-sel: #B22222;
+    --header-bg: #4A0A0A;
+    --accent: #B22222;
+    --accent-light: #F5DADA;
+    --main-bg: #FAFAFA;
+    --note-bg: #FFF5E6;
+    --table-h: #B22222;
+    --table-r: #FDF2F2;
+    --text: #1C1C1C;
+    --dim: #FFB8B8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--main-bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: var(--header-bg);
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+  #header h1 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  #search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #search-wrap span { color: var(--dim); font-size: 16px; }
+  #search-input {
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 13px;
+    font-family: sans-serif;
+    width: 210px;
+    outline: none;
+  }
+  #search-input:focus { box-shadow: 0 0 0 2px var(--dim); }
+
+  /* ── BODY LAYOUT ── */
+  #body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 238px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #5a0e0e var(--sidebar-bg);
+  }
+  #sidebar::-webkit-scrollbar { width: 5px; }
+  #sidebar::-webkit-scrollbar-thumb { background: #5a0e0e; border-radius: 3px; }
+  .sidebar-label {
+    padding: 14px 14px 4px;
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-family: sans-serif;
+    text-transform: uppercase;
+  }
+  .ch-btn {
+    display: block;
+    width: calc(100% - 10px);
+    margin: 1px 5px;
+    text-align: left;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 7px 10px 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: sans-serif;
+    cursor: pointer;
+    border-radius: 4px;
+    line-height: 1.4;
+    transition: background 0.12s;
+  }
+  .ch-btn:hover { background: var(--sidebar-hover); }
+  .ch-btn.active { background: var(--sidebar-sel); }
+  .sidebar-divider {
+    height: 1px;
+    background: #4A0A0A;
+    margin: 8px 14px;
+  }
+
+  /* ── CONTENT AREA ── */
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 44px 50px;
+    background: var(--main-bg);
+    scrollbar-width: thin;
+    scrollbar-color: #ddd var(--main-bg);
+  }
+  #content::-webkit-scrollbar { width: 7px; }
+  #content::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+  /* ── CHAPTER TYPOGRAPHY ── */
+  .ch-h1 {
+    color: var(--accent);
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 18px;
+    line-height: 1.2;
+  }
+  .ch-h2 {
+    color: #6B1010;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 22px 0 8px;
+    border-bottom: 2px solid var(--accent-light);
+    padding-bottom: 4px;
+  }
+  .ch-h3 {
+    color: #2C1010;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 14px 0 5px;
+  }
+  .ch-body {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    margin: 0 0 10px;
+  }
+  .ch-bullet {
+    display: flex;
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 3px 0;
+  }
+  .ch-bullet .dot {
+    color: var(--accent);
+    font-weight: 800;
+    margin-right: 10px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ch-note {
+    background: var(--note-bg);
+    border: 1px solid #F0C060;
+    border-left: 4px solid #D4900A;
+    border-radius: 5px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    color: #4A3000;
+    font-size: 13px;
+    line-height: 1.75;
+    white-space: pre-line;
+    font-style: italic;
+  }
+
+  /* ── TABLES ── */
+  .ch-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .ch-table th {
+    background: var(--table-h);
+    color: #fff;
+    padding: 7px 11px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .ch-table td {
+    padding: 6px 11px;
+    border-top: 1px solid #f0d8d8;
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .ch-table tr:nth-child(odd) td { background: var(--table-r); }
+  .ch-table tr:nth-child(even) td { background: #fff; }
+  .ch-table tr:hover td { background: var(--accent-light); }
+  .table-wrap { overflow-x: auto; margin-bottom: 14px; }
+
+  /* ── INDEX VIEW ── */
+  #index-view { display: none; }
+  #index-view h1 { color: var(--accent); font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  #index-subtitle { color: #666; font-size: 13px; font-family: sans-serif; margin-bottom: 14px; }
+  #index-filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+  #index-filter-row label { color: #666; font-size: 13px; font-family: sans-serif; }
+  #index-filter {
+    padding: 5px 12px; border-radius: 4px;
+    border: 1px solid #ddd; font-size: 13px;
+    font-family: sans-serif; width: 240px; outline: none;
+  }
+  #index-filter:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); }
+  #index-clear {
+    background: none; border: none; color: var(--accent);
+    cursor: pointer; font-size: 16px; line-height: 1;
+  }
+  #index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 4px;
+  }
+  .idx-item {
+    padding: 7px 12px;
+    background: #fff;
+    border: 1px solid var(--accent-light);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.12s;
+  }
+  .idx-item:hover { background: var(--accent-light); }
+  .idx-dest { color: var(--accent); font-size: 11px; margin-left: 8px; flex-shrink: 0; }
+
+  /* ── SEARCH VIEW ── */
+  #search-view { display: none; }
+  #search-view h1 { color: var(--accent); font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+  .srch-item {
+    padding: 10px 16px;
+    margin-bottom: 6px;
+    background: #fff;
+    border: 1px solid var(--accent-light);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.12s;
+  }
+  .srch-item:hover { background: var(--accent-light); }
+  .srch-dest { color: #999; font-size: 12px; }
+  #no-results { color: #888; font-family: sans-serif; font-style: italic; }
+
+  /* ── FADE IN ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .fade-in { animation: fadeIn 0.22s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 720px) {
+    #sidebar { width: 190px; }
+    #content { padding: 20px 20px 40px; }
+    #header h1 { font-size: 13px; }
+    #search-input { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>🍷&nbsp; WSET Level 2 Award in Wines — Interactive Study Guide</h1>
+  <div id="search-wrap">
+    <span>🔍</span>
+    <input id="search-input" type="text" placeholder="Search topics…" autocomplete="off">
+  </div>
+</div>
+
+<div id="body">
+  <nav id="sidebar">
+    <div class="sidebar-label">Chapters</div>
+    <!-- buttons injected by JS -->
+    <div class="sidebar-divider"></div>
+    <button class="ch-btn" id="btn-index" onclick="showIndex()">📑&nbsp; A–Z Index</button>
+    <div style="height:12px"></div>
+  </nav>
+
+  <main id="content">
+    <!-- Chapter panel -->
+    <div id="chapter-view"></div>
+
+    <!-- Index panel -->
+    <div id="index-view">
+      <h1>A – Z Index</h1>
+      <p id="index-subtitle">Click any term to navigate to its chapter.</p>
+      <div id="index-filter-row">
+        <label for="index-filter">Filter:</label>
+        <input id="index-filter" type="text" placeholder="Type to filter…" oninput="filterIndex()" autocomplete="off">
+        <button id="index-clear" onclick="clearIndexFilter()" title="Clear">✕</button>
+      </div>
+      <div id="index-grid"></div>
+    </div>
+
+    <!-- Search panel -->
+    <div id="search-view">
+      <h1>Search Results</h1>
+      <div id="search-results-list"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+intro:{title:"Introduction",icon:"📖",content:[
+["h1","Introduction"],
+["body","Welcome to the WSET Level 2 Award in Wines interactive study guide. This guide covers the full official curriculum — wine growing, winemaking, the major wine regions of the world, sparkling and fortified wines, and how to taste and serve wine professionally."],
+["body","Use the chapter buttons on the left to navigate, the A–Z Index for quick look-ups, or the 🔍 search bar to find any topic instantly."],
+["h2","What You Will Learn"],
+["bullet","Ch 1  – Style, Quality & Price"],
+["bullet","Ch 2  – Growing Grapes (climate, soil, viticulture)"],
+["bullet","Ch 3  – Making Still Wine (white, red, rosé)"],
+["bullet","Ch 4  – Sparkling & Fortified Wine Production"],
+["bullet","Ch 5  – WSET Level 2 SAT (Systematic Approach to Tasting)"],
+["bullet","Ch 6  – France: Bordeaux & Southwest"],
+["bullet","Ch 7  – France: Burgundy & Beaujolais"],
+["bullet","Ch 8  – France: Rhône, Alsace & Loire"],
+["bullet","Ch 9  – France: Champagne & Other Regions"],
+["bullet","Ch 10 – Italy"],
+["bullet","Ch 11 – Spain & Portugal"],
+["bullet","Ch 12 – Germany & Austria"],
+["bullet","Ch 13 – USA, Canada & Other Europe"],
+["bullet","Ch 14 – Australia & New Zealand"],
+["bullet","Ch 15 – South Africa, Chile & Argentina"],
+["bullet","Ch 16 – Sparkling Wines of the World"],
+["bullet","Ch 17 – Fortified Wines of the World"],
+["bullet","Ch 18 – Keeping & Serving Wine"],
+["note","💡 TIP — Click any term in the Index to jump straight to its chapter. All content is based on the official WSET Level 2 Award in Wines curriculum."]]},
+
+ch1:{title:"1. Style, Quality & Price",icon:"⭐",content:[
+["h1","Chapter 1 – Style, Quality and Price"],
+["body","At Level 2 you explore what factors determine a wine's STYLE, its QUALITY, and its PRICE. Understanding these three factors helps you navigate any wine list or retail shelf."],
+["h2","Factors That Influence Style"],
+["h3","Grape Variety"],
+["bullet","The single most important factor. Each variety has characteristic flavours, acidity, and tannin levels."],
+["bullet","E.g. Sauvignon Blanc → herbaceous, high acid; Chardonnay → variable, often oaked."],
+["h3","Climate"],
+["bullet","Cool climates → higher acidity, lower alcohol, lighter body, greener flavours."],
+["bullet","Warm climates → lower acidity, higher alcohol, fuller body, riper/tropical flavours."],
+["h3","Winemaking Decisions"],
+["bullet","Use of oak, length of skin contact, fermentation temperature, malolactic fermentation — all shape style."],
+["h2","Factors That Influence Quality"],
+["body","Quality in wine is not purely subjective. WSET identifies key quality indicators:"],
+["bullet","CONCENTRATION of flavour — how intense the aromas and flavours are."],
+["bullet","BALANCE — acidity, tannin, alcohol, sweetness in harmony."],
+["bullet","LENGTH — how long flavours persist after swallowing (finish)."],
+["bullet","COMPLEXITY — multiple layers of flavour rather than a single note."],
+["bullet","TYPICITY — does the wine express its grape variety and/or region?"],
+["h2","WSET Level 2 Quality Scale"],
+["table_h","Level|Description"],
+["table_r","Faulty|Has an identifiable fault (e.g. cork taint, oxidation)"],
+["table_r","Poor|No fault, but lacking fruit, balance, or character"],
+["table_r","Acceptable|Simple, clean; pleasant but unexciting"],
+["table_r","Good|Some complexity, good balance, satisfying"],
+["table_r","Very Good|Pronounced aromas, balance, good length, complexity"],
+["table_r","Outstanding|Complex, harmonious, great concentration and length"],
+["h2","Factors That Influence Price"],
+["h3","Supply & Demand"],
+["bullet","Limited production regions (e.g. Pomerol, Burgundy Grand Cru) command high prices."],
+["bullet","Large-volume regions (e.g. Languedoc, South-East Australia) offer value."],
+["h3","Production Costs"],
+["bullet","Steep terraced vineyards (e.g. Mosel, Douro) require hand harvesting — very costly."],
+["bullet","New oak barrels cost €500–€1,000 each; extended ageing adds storage costs."],
+["h3","Reputation & Brand"],
+["bullet","Established appellations (e.g. Champagne, Napa Valley) carry a premium."],
+["bullet","Iconic producers (e.g. Château Pétrus, DRC) command exceptional prices."],
+["note","🔑 KEY POINTS\n• Quality indicators: concentration, balance, length, complexity, typicity.\n• Price driven by supply/demand, production costs, and reputation.\n• Style shaped by grape variety, climate, and winemaking.\n• A wine can be poor quality AND expensive (brand/scarcity premium)."]]},
+
+ch2:{title:"2. Growing Grapes",icon:"🌿",content:[
+["h1","Chapter 2 – Growing Grapes"],
+["body","Viticulture (grape growing) has a profound impact on wine style and quality. Climate, soil, and human decisions in the vineyard all play a role."],
+["h2","Climate"],
+["h3","Macroclimate — Regional Climate"],
+["bullet","Continental: hot summers, cold winters; large diurnal (day/night) range. E.g. Burgundy, Napa Valley. Preserves acidity while allowing full ripening."],
+["bullet","Maritime: moderated by proximity to ocean; mild, wet winters; cooler summers. E.g. Bordeaux, Marlborough."],
+["bullet","Mediterranean: hot, dry summers; mild, wet winters. E.g. Southern France, Southern Spain, parts of California."],
+["h3","Mesoclimate — Site Climate"],
+["bullet","Aspect (slope direction): south-facing slopes in N. Hemisphere maximise sun."],
+["bullet","Altitude: higher = cooler temperatures, good for preserving acidity."],
+["bullet","Proximity to water: rivers and lakes moderate temperature extremes."],
+["h2","Soil"],
+["bullet","Well-drained soils (gravel, chalk, slate) force vines to search deep for water → concentration and character."],
+["bullet","Fertile, moisture-retaining soils produce high yields of dilute, less complex wine."],
+["table_h","Soil Type|Where Notable|Effect"],
+["table_r","Gravel|Médoc (Bordeaux)|Excellent drainage, heat retention"],
+["table_r","Chalk|Champagne, Chablis|Good drainage, high acidity retained"],
+["table_r","Slate|Mosel (Germany)|Heat retention → ripeness in cool climate"],
+["table_r","Limestone|Burgundy|Moderate drainage, adds minerality"],
+["table_r","Volcanic|Southern Italy|Mineral character, good drainage"],
+["table_r","Clay|Pomerol (Bordeaux)|Moisture retention → plump Merlot"],
+["h2","Viticulture Decisions"],
+["h3","Yield Management"],
+["bullet","Lower yields generally produce MORE CONCENTRATED, higher-quality wine."],
+["bullet","Yield controlled by: pruning (fewer buds), green harvesting (removing bunches), vine age (older vines naturally produce less)."],
+["h3","Organic & Biodynamic Viticulture"],
+["bullet","Organic: no synthetic pesticides or herbicides."],
+["bullet","Biodynamic: holistic philosophy treating vineyard as a living ecosystem; follows lunar/cosmic calendar."],
+["h3","Harvest Decisions"],
+["bullet","Hand harvesting: essential on steep slopes, for Botrytis-affected grapes, or when whole bunches needed."],
+["bullet","Machine harvesting: more efficient and cheaper; only possible on flat terrain."],
+["h2","Vine Hazards"],
+["bullet","FROST: spring frosts can kill young shoots. Methods to combat: heaters, wind machines, water sprinklers, smudge pots."],
+["bullet","RAIN at harvest: dilutes grapes; can cause rot."],
+["bullet","DROUGHT: moderate stress concentrates flavours; excess kills vines."],
+["bullet","DISEASE: powdery mildew, downy mildew, botrytis (beneficial for sweet wines)."],
+["note","🔑 KEY FACTS\n• Diurnal range (hot days, cool nights) = preserves acidity AND allows full ripening.\n• Old vines → lower yields → more concentrated wine.\n• Well-drained soil → vines stressed → better quality fruit.\n• Gravel = Médoc; Chalk = Champagne/Chablis; Slate = Mosel."]]},
+
+ch3:{title:"3. Making Still Wine",icon:"🏭",content:[
+["h1","Chapter 3 – Making Still Wine"],
+["body","Winemaking converts grape juice into wine. The decisions made in the winery are as important as what happens in the vineyard."],
+["h2","Making White Wine"],
+["table_h","Step|Detail"],
+["table_r","Harvesting|Grapes picked at optimum ripeness."],
+["table_r","Crushing|Berries broken open to release juice."],
+["table_r","Pressing|Juice separated from skins immediately."],
+["table_r","Settling|Juice left to clarify (solids sink)."],
+["table_r","Fermentation|Yeast added; sugar → alcohol + CO₂."],
+["table_r","Stabilisation|Wine clarified, filtered, prepared for bottling."],
+["table_r","Bottling|Sealed with cork, screwcap, or crown cap."],
+["h3","Fermentation Vessels"],
+["bullet","STAINLESS STEEL TANK: preserves fresh, crisp fruit character. Used for Sauvignon Blanc, Pinot Grigio, Riesling."],
+["bullet","OAK BARREL (fermented): adds texture, complexity, and subtle oak flavours. Used for premium Chardonnay (Burgundy, Napa)."],
+["h3","Malolactic Fermentation (MLF)"],
+["bullet","A SECONDARY fermentation where tart MALIC ACID converts to softer LACTIC ACID."],
+["bullet","Effect: REDUCES acidity; adds CREAMY, BUTTERY texture."],
+["bullet","Used in: most red wines, and some fuller-bodied whites (e.g. oaked Chardonnay)."],
+["bullet","AVOIDED in: crisp whites like Sauvignon Blanc, Riesling — would lose freshness."],
+["h3","Bâtonnage (Lees Stirring)"],
+["bullet","Stirring of dead yeast cells back into the wine during maturation."],
+["bullet","Effect: adds creamy texture, complexity, and body. Used in white Burgundy, Muscadet sur Lie."],
+["h2","Making Red Wine"],
+["table_h","Step|Detail"],
+["table_r","Destemming|Stalks removed (usually). Whole bunch = stems kept."],
+["table_r","Crushing|Berries broken; juice + skins enter fermentation vessel."],
+["table_r","Fermentation|Skins remain in contact during fermentation."],
+["table_r","Maceration|Extended skin contact extracts colour, tannin, flavour."],
+["table_r","Draining/Pressing|Free-run wine drained off; skins pressed."],
+["table_r","Maturation|In oak barrels or stainless steel."],
+["table_r","Bottling|After maturation and blending."],
+["h3","Extraction Techniques"],
+["bullet","PUMPING OVER (Remontage): pumping liquid from base over the cap of skins."],
+["bullet","PUNCHING DOWN (Pigeage): pushing the cap of skins down into the liquid."],
+["bullet","Longer maceration = more TANNIN and COLOUR extracted."],
+["h2","Making Rosé Wine"],
+["bullet","SAIGNÉE ('bleeding'): juice bled off early in red wine fermentation."],
+["bullet","DIRECT PRESSING: black grapes pressed immediately, like white wine; most common for quality dry rosé."],
+["bullet","BLENDING: mixing white and red wine (only permitted for Champagne rosé)."],
+["note","🔑 KEY WINEMAKING DECISIONS\n• MLF: YES = creamy, lower acid (oaked Chardonnay). NO = fresh, high acid (Riesling).\n• Oak ferment: adds complexity to whites. Steel: preserves freshness.\n• Long maceration: more colour and tannin in red wines.\n• Bâtonnage (lees stirring): adds richness and texture."]]},
+
+ch4:{title:"4. Sparkling & Fortified",icon:"🥂",content:[
+["h1","Chapter 4 – Sparkling and Fortified Wine Production"],
+["h2","How Sparkling Wine Gets Its Bubbles"],
+["body","CO₂ from a SECOND fermentation is trapped in the wine, creating the fizz."],
+["h3","Traditional Method (Méthode Traditionnelle)"],
+["bullet","Base wine made first. Yeast + sugar (liqueur de tirage) added → SECOND fermentation IN THE BOTTLE, trapping CO₂."],
+["bullet","Wine ages on LEES (dead yeast cells) in bottle → YEASTY, BISCUITY, TOASTY character."],
+["bullet","RIDDLING (Remuage): bottles gradually tilted so lees collect in neck."],
+["bullet","DISGORGEMENT: frozen neck ejected, removing lees."],
+["bullet","DOSAGE: small amount of wine + sugar added to adjust final sweetness level."],
+["bullet","Examples: Champagne, Crémant (France), Cava (Spain), Franciacorta (Italy)."],
+["h3","Tank Method (Charmat / Cuve Close)"],
+["bullet","Second fermentation happens in a SEALED PRESSURISED TANK, not individual bottles."],
+["bullet","Cheaper; preserves FRESH FRUITY aromas rather than yeasty complexity."],
+["bullet","Example: Prosecco (Italy)."],
+["h3","Injection Method (Carbonation)"],
+["bullet","CO₂ pumped directly into wine. Simplest and cheapest. Used for basic sparkling wines."],
+["h2","Champagne Sweetness Scale"],
+["table_h","Label Term|Residual Sugar (g/L)|Taste Perception"],
+["table_r","Brut Nature|0–3 g/L|Bone dry"],
+["table_r","Extra Brut|0–6 g/L|Very dry"],
+["table_r","Brut|0–12 g/L|Dry (most common)"],
+["table_r","Extra Dry|12–17 g/L|Off-dry"],
+["table_r","Sec|17–32 g/L|Medium"],
+["table_r","Demi-Sec|32–50 g/L|Medium-sweet"],
+["table_r","Doux|50+ g/L|Sweet"],
+["h2","Making Fortified Wine"],
+["body","Fortified wines have a neutral grape spirit (brandy) added to raise the alcohol to 15–22% abv."],
+["h3","Port — Spirit Added DURING Fermentation"],
+["bullet","Spirit added DURING fermentation → kills yeast → retains RESIDUAL SUGAR → sweet wine."],
+["h3","Sherry — Spirit Added AFTER Fermentation"],
+["bullet","Wine ferments fully to DRY before spirit is added. Base wine is DRY."],
+["h2","Sherry Styles"],
+["bullet","FLOR: a layer of protective yeast on Fino and Manzanilla Sherry, preventing oxidation; gives nutty/almond character."],
+["bullet","SOLERA SYSTEM: fractional blending of wines from different years in a series of barrels."],
+["table_h","Sherry Style|Description"],
+["table_r","Fino|Pale, dry, nutty, protected by flor"],
+["table_r","Manzanilla|Like Fino but from Sanlúcar; sea-salty character"],
+["table_r","Amontillado|Fino where flor dies; aged oxidatively; nutty, amber"],
+["table_r","Oloroso|No flor; fully oxidative ageing; rich, dark, dry to medium"],
+["table_r","Cream|Sweetened Oloroso; dark, sweet, rich"],
+["table_r","Pedro Ximénez|From dried PX grapes; intensely sweet, dark, raisiny"],
+["note","🔑 KEY FACTS\n• Traditional Method = bottle fermentation = yeasty/biscuity complexity.\n• Tank Method = Prosecco = fresh, fruity, no yeast complexity.\n• Port: spirit added DURING fermentation → sweet.\n• Sherry: spirit added AFTER fermentation → base is dry.\n• Brut (0–12 g/L) = most common Champagne style."]]},
+
+ch5:{title:"5. WSET Level 2 SAT",icon:"👃",content:[
+["h1","Chapter 5 – WSET Level 2 Systematic Approach to Tasting®"],
+["body","The WSET Level 2 SAT provides a structured framework for assessing and describing any wine with consistency."],
+["h2","SAT Structure Overview"],
+["table_h","Section|What to Assess"],
+["table_r","APPEARANCE|Clarity · Intensity · Colour"],
+["table_r","NOSE|Condition · Intensity · Aroma Characteristics · Development"],
+["table_r","PALATE|Sweetness · Acidity · Tannin · Alcohol · Body · Flavour Intensity · Flavour Characteristics · Finish"],
+["table_r","CONCLUSIONS|Quality Level · Readiness for Drinking/Potential"],
+["h2","1. Appearance"],
+["h3","Clarity"],
+["bullet","Clear (no haziness) or Hazy (possible fault — unless intentional, e.g. unfiltered)."],
+["h3","Colour — Whites"],
+["table_h","Colour|Suggests"],
+["table_r","Lemon-green|Young, cool climate, unoaked (e.g. Sauvignon Blanc)"],
+["table_r","Lemon|Young to medium age"],
+["table_r","Gold|Oaked, sweet, or with some age"],
+["table_r","Amber/Brown|Old, heavily oxidised, or deliberately oxidative"],
+["h3","Colour — Reds"],
+["table_h","Colour|Suggests"],
+["table_r","Purple|Young wine"],
+["table_r","Ruby|Young to medium age"],
+["table_r","Garnet|Medium age"],
+["table_r","Tawny|Old, or deliberately oxidative ageing (Tawny Port)"],
+["table_r","Brown|Very old or faulty"],
+["h2","2. Nose — Faults & Aroma Development"],
+["h3","Common Wine Faults"],
+["table_h","Fault|Cause|Aroma"],
+["table_r","Cork taint (TCA)|Contaminated cork|Musty, wet cardboard"],
+["table_r","Oxidation|Too much oxygen exposure|Sherry-like, stale, flat"],
+["table_r","Reduction|Too little oxygen|Struck match, rubber, garlic"],
+["table_r","Volatile Acidity|Excess acetic acid|Vinegar, nail-polish remover"],
+["h3","Aroma Development (Primary / Secondary / Tertiary)"],
+["bullet","PRIMARY aromas: from the grape itself — fruit, flowers, herbaceous character."],
+["bullet","SECONDARY aromas: from fermentation — bread dough, butter (MLF), cream."],
+["bullet","TERTIARY aromas (Bouquet): from ageing — vanilla, toast, leather, earth, mushroom, dried fruit, tobacco, honey."],
+["h2","3. Palate — Assessment Order"],
+["table_h","Element|Scale|How Detected"],
+["table_r","Sweetness|Dry · Off-dry · Medium-dry · Medium-sweet · Sweet · Luscious|Sugar sensation on tip of tongue"],
+["table_r","Acidity|Low · Med(-) · Med · Med(+) · High|Mouth-watering/salivation"],
+["table_r","Tannin (reds)|Low · Med(-) · Med · Med(+) · High|Drying/grippy sensation"],
+["table_r","Alcohol|Low (<11%) · Med (11–13.9%) · High (14%+)|Warming at back of throat"],
+["table_r","Body|Light · Med(-) · Med · Med(+) · Full|Overall weight and mouthfeel"],
+["table_r","Finish|Short (<3s) · Med (3–5s) · Long (5–10s) · Very Long (10s+)|Duration of flavour after swallowing"],
+["h2","4. Conclusions"],
+["bullet","Quality Level: Faulty · Poor · Acceptable · Good · Very Good · Outstanding"],
+["bullet","Readiness: Too young / Drink now / Can continue to develop / Tired / Too old"],
+["note","🔑 SAT MEMORY ORDER\n  A → N → P → C\n  APPEARANCE → NOSE → PALATE → CONCLUSIONS\n  Palate order: Sweetness · Acidity · Tannin · Alcohol · Body · Intensity · Finish\n  Long finish + complexity + balance = high quality"]]},
+
+ch6:{title:"6. France: Bordeaux",icon:"🇫🇷",content:[
+["h1","Chapter 6 – France: Bordeaux and the Southwest"],
+["body","Bordeaux is the world's most famous wine region, producing large volumes of high-quality red, dry white, and sweet white wine."],
+["h2","Key Facts"],
+["bullet","Climate: MARITIME — moderated by Atlantic Ocean; warm summers, risk of autumn rain."],
+["bullet","Most wines are BLENDS of multiple grape varieties."],
+["h2","Red Bordeaux — Left Bank vs. Right Bank"],
+["table_h","Bank|Dominant Grape|Soil|Style"],
+["table_r","Left Bank|Cabernet Sauvignon|Gravel|High tannin, cedar, blackcurrant, full body; ages well"],
+["table_r","Right Bank|Merlot|Clay/limestone|Softer, plummy, rounder tannin"],
+["h3","Key Left Bank Appellations"],
+["bullet","MÉDOC / HAUT-MÉDOC: home to most famous châteaux. Soil: gravel. Cab Sauv dominant."],
+["bullet","PAUILLAC: First Growths include Châteaux Lafite, Latour, Mouton Rothschild."],
+["bullet","MARGAUX: elegant, perfumed Cab Sauv; First Growth: Château Margaux."],
+["bullet","GRAVES / PESSAC-LÉOGNAN: south of city; good reds AND dry whites."],
+["h3","Key Right Bank Appellations"],
+["bullet","SAINT-ÉMILION: Merlot dominant; First Growth: Château Ausone."],
+["bullet","POMEROL: Merlot on clay; no official classification; home to Pétrus."],
+["h2","1855 Classification"],
+["bullet","Official classification of LEFT BANK châteaux from 1855."],
+["bullet","Five levels: Premier Cru (First Growth) to Cinquième Cru (Fifth Growth)."],
+["bullet","Only Mouton Rothschild has been promoted (1973). Classification rarely changes."],
+["h2","White Bordeaux"],
+["h3","Dry White Bordeaux"],
+["bullet","Grapes: Sauvignon Blanc + Sémillon blend. Best from Pessac-Léognan."],
+["bullet","Entre-Deux-Mers: dry, crisp, unoaked Sauvignon Blanc; good value."],
+["h3","Sweet White Bordeaux"],
+["bullet","SAUTERNES & BARSAC: Sémillon + Sauvignon Blanc affected by BOTRYTIS CINEREA (Noble Rot) → concentrated honey, apricot, marmalade flavours."],
+["bullet","Château d'Yquem: Premier Cru Supérieur; most prestigious Sauternes."],
+["h2","Southwest France"],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Bergerac|Bordeaux varieties|Red, dry white, sweet white"],
+["table_r","Cahors|Malbec (Côt/Auxerrois)|'Black Wine' — tannic red"],
+["table_r","Madiran|Tannat|Very tannic red"],
+["table_r","Jurançon|Gros/Petit Manseng|Dry & sweet white"],
+["note","🔑 BORDEAUX KEY FACTS\n• Left Bank = Cab Sauv dominant; Right Bank = Merlot dominant.\n• Pomerol is on the Right Bank; NOT in the 1855 Classification.\n• Sauternes = Botrytis affected; Sémillon dominant.\n• Entre-Deux-Mers = dry white only; good value.\n• Cahors = Malbec (tannic, 'black wine')."]]},
+
+ch7:{title:"7. France: Burgundy",icon:"🇫🇷",content:[
+["h1","Chapter 7 – France: Burgundy and Beaujolais"],
+["h2","Burgundy (Bourgogne)"],
+["body","Burgundy produces the world's most famous Pinot Noir (reds) and Chardonnay (whites). Climate is CONTINENTAL — cool, with significant vintage variation."],
+["h2","Burgundy Classification"],
+["table_h","Level|Description"],
+["table_r","Regional AOC|E.g. Bourgogne Rouge/Blanc — entry level"],
+["table_r","Village AOC|E.g. Gevrey-Chambertin, Meursault"],
+["table_r","Premier Cru|Specific named vineyard within a village"],
+["table_r","Grand Cru|Finest individual vineyards; own AOC — HIGHEST LEVEL"],
+["h2","Sub-Regions (North to South)"],
+["h3","Chablis"],
+["bullet","Northernmost part; COOL climate → high acidity, lean body, citrus, green apple."],
+["bullet","Grape: Chardonnay ONLY. Typically UNOAKED; mineral (chalky)."],
+["bullet","4 levels: Petit Chablis → Chablis → Premier Cru → Grand Cru."],
+["h3","Côte d'Or"],
+["bullet","CÔTE DE NUITS (north): predominantly RED (Pinot Noir). Grand Crus: Chambertin, Romanée-Conti."],
+["bullet","CÔTE DE BEAUNE (south): RED and WHITE. Famous white villages: Meursault, Puligny-Montrachet, Chassagne-Montrachet. Grand Crus: Corton-Charlemagne (white), Le Montrachet (white)."],
+["h3","Côte Chalonnaise & Mâconnais"],
+["bullet","Côte Chalonnaise: Rully, Mercurey, Givry, Montagny."],
+["bullet","Mâconnais: Pouilly-Fuissé (best quality) and Mâcon-Villages (good value Chardonnay)."],
+["h2","Key White Burgundy Styles"],
+["table_h","Appellation|Style"],
+["table_r","Chablis (unoaked)|Crisp, high acid, mineral, lemon, green apple"],
+["table_r","Meursault|Rich, oaked, buttery, hazelnut, peachy"],
+["table_r","Puligny-Montrachet|Elegant, mineral, oaked, great complexity"],
+["table_r","Pouilly-Fuissé|Full, oaked Chardonnay; rich stone fruit"],
+["table_r","Mâcon-Villages|Lighter, unoaked or lightly oaked, good value"],
+["h2","Beaujolais"],
+["bullet","South of Mâconnais. Grape: GAMAY (not Pinot Noir — important exam point!)."],
+["bullet","Style: light body, low tannin, high acidity, red cherry, raspberry, floral."],
+["bullet","Production method: CARBONIC MACERATION (whole bunches in CO₂ atmosphere) → especially fruity, low tannin."],
+["table_h","Level|Detail"],
+["table_r","Beaujolais|Entry level; light, simple, fruity"],
+["table_r","Beaujolais Villages|38 villages; slightly more body and depth"],
+["table_r","Beaujolais Crus|10 named crus (e.g. Moulin-à-Vent, Morgon, Fleurie); most complex; can age"],
+["body","BEAUJOLAIS NOUVEAU: Released 3rd Thursday of November each year. Light, fruity, drink immediately."],
+["note","🔑 KEY BURGUNDY FACTS\n• Chablis = unoaked Chardonnay; very high acid, mineral.\n• Côte de Nuits = Pinot Noir. Côte de Beaune = Pinot Noir + Chardonnay.\n• Beaujolais = GAMAY (not Pinot Noir).\n• Beaujolais Crus: Moulin-à-Vent, Morgon, Fleurie are the most important.\n• Grand Cru is the HIGHEST quality level in Burgundy."]]},
+
+ch8:{title:"8. Rhône, Alsace & Loire",icon:"🇫🇷",content:[
+["h1","Chapter 8 – France: Rhône Valley, Alsace, and Loire Valley"],
+["h2","Northern Rhône — SYRAH Country"],
+["bullet","Climate: CONTINENTAL. Steep terraced granite slopes along the Rhône river."],
+["table_h","Appellation|Grapes|Style"],
+["table_r","Côte-Rôtie|Syrah (+ Viognier)|Elegant, perfumed Syrah; floral"],
+["table_r","Hermitage|Syrah / Marsanne|Rich, powerful, tannic; long-lived"],
+["table_r","Crozes-Hermitage|Syrah|Similar but lighter; better value"],
+["table_r","Cornas|Syrah 100%|Dense, very tannic, dark"],
+["table_r","Condrieu|Viognier 100%|Aromatic white; peach, apricot, floral"],
+["h2","Southern Rhône — GRENACHE Blends"],
+["bullet","Climate: MEDITERRANEAN — hot, dry; Mistral wind. Wines are BLENDS (unlike N. Rhône single varieties)."],
+["table_h","Appellation|Grapes|Style"],
+["table_r","Châteauneuf-du-Pape|Grenache dominant (13 varieties permitted)|Rich, full body, high alcohol, spice, garrigue"],
+["table_r","Gigondas|Grenache + Syrah + Mourvèdre|Bold, spicy, tannic"],
+["table_r","Vacqueyras|Grenache + Syrah|Medium-full; good value"],
+["table_r","Côtes du Rhône|Grenache + Syrah + Mourvèdre|Everyday; soft red fruits"],
+["h2","Alsace"],
+["body","Far northeast of France, bordering Germany. Climate: CONTINENTAL (dry and sunny thanks to Vosges Mountains rain shadow). Wines labelled by GRAPE VARIETY (unusual for France)."],
+["table_h","Variety|Style"],
+["table_r","Riesling|Dry (unlike Germany), high acid, mineral, citrus, petrol with age"],
+["table_r","Gewurztraminer|Intensely aromatic; rose, lychee, ginger; often off-dry"],
+["table_r","Pinot Gris|Rich, full body, smoky, stone fruit"],
+["table_r","Muscat|Dry; grape and floral aromas"],
+["bullet","VENDANGE TARDIVE (VT): late harvest; rich, often sweet."],
+["bullet","SÉLECTION DE GRAINS NOBLES (SGN): botrytis-affected; intensely sweet."],
+["h2","Loire Valley"],
+["table_h","Region|Wine Style|Key Grape"],
+["table_r","Muscadet (west)|Bone dry, light, mineral|Melon de Bourgogne"],
+["table_r","Vouvray|Range: dry to sweet|Chenin Blanc"],
+["table_r","Chinon/Bourgueil|Dry red|Cabernet Franc"],
+["table_r","Sancerre/Pouilly-Fumé|Dry white; classic benchmark|Sauvignon Blanc"],
+["body","MUSCADET SUR LIE: aged on lees → yeasty, creamy texture. Great with shellfish."],
+["note","🔑 KEY FACTS\n• N. Rhône = Syrah/Viognier; single varieties. S. Rhône = Grenache blends.\n• Châteauneuf-du-Pape: up to 13 grape varieties permitted; high alcohol.\n• Alsace: labelled by grape, mostly DRY; Riesling here is DRY (unlike Germany).\n• Sancerre/Pouilly-Fumé = Sauvignon Blanc (classic benchmark).\n• Vouvray = Chenin Blanc; can be dry, medium, or very sweet."]]},
+
+ch9:{title:"9. France: Champagne",icon:"🇫🇷",content:[
+["h1","Chapter 9 – France: Champagne and Other French Regions"],
+["h2","Champagne"],
+["bullet","Climate: COOL continental. Chalk soils. Traditional Method exclusively."],
+["bullet","Main grapes: PINOT NOIR, PINOT MEUNIER (black), CHARDONNAY (white)."],
+["h3","Champagne Styles"],
+["table_h","Style|Description"],
+["table_r","Non-Vintage (NV)|Blend of multiple years; house style; most common"],
+["table_r","Vintage|From single outstanding year; richer, more complex"],
+["table_r","Blanc de Blancs|100% Chardonnay; delicate, elegant, floral, citrus"],
+["table_r","Blanc de Noirs|From black grapes only; richer, fuller body"],
+["table_r","Rosé|Pink Champagne; red wine added (unique to Champagne)"],
+["table_r","Prestige Cuvée|Top bottling (e.g. Dom Pérignon, Cristal)"],
+["h3","Key Sub-Regions"],
+["bullet","MONTAGNE DE REIMS: mainly Pinot Noir."],
+["bullet","VALLÉE DE LA MARNE: mainly Pinot Meunier."],
+["bullet","CÔTE DES BLANCS: mainly Chardonnay."],
+["h2","Crémant"],
+["bullet","Sparkling wines made in France OUTSIDE Champagne using the Traditional Method."],
+["bullet","Crémant d'Alsace, Crémant de Bourgogne, Crémant de Loire, Crémant du Jura."],
+["bullet","Often excellent value vs. Champagne."],
+["h2","Other Important French Regions"],
+["table_h","Region|Key Style/Wine|Notes"],
+["table_r","Languedoc-Roussillon|Red, white, rosé|Largest region in France by volume; Mediterranean"],
+["table_r","Provence|Dry pale rosé|Grenache/Cinsault/Mourvèdre; Côtes de Provence"],
+["table_r","Bandol|Tannic red|Mourvèdre dominant; serious, long-lived"],
+["table_r","Jura|Vin Jaune, Vin de Paille|Oxidative; very distinctive"],
+["table_r","Roussillon|VDN (Banyuls, Muscat de Rivesaltes)|Sweet fortified wines"],
+["note","🔑 KEY FACTS\n• Champagne = Traditional Method only; blend of PN + PM + Chardonnay.\n• Blanc de Blancs = 100% Chardonnay. Blanc de Noirs = 100% black grapes.\n• Crémant = Traditional Method from other French regions.\n• Provence = dry pale rosé. Bandol = serious Mourvèdre red.\n• Languedoc-Roussillon = France's largest volume wine region."]]},
+
+ch10:{title:"10. Italy",icon:"🇮🇹",content:[
+["h1","Chapter 10 – Wines of Italy"],
+["body","Italy is the world's largest wine producer by volume, with an enormous number of indigenous grape varieties."],
+["h2","Italian Wine Classification"],
+["table_h","Level|Description"],
+["table_r","DOC|Denominazione di Origine Controllata — controlled region"],
+["table_r","DOCG|DOC + Garantita — highest quality tier; stricter rules"],
+["table_r","IGT|Indicazione Geografica Tipica — flexible; includes Super Tuscans"],
+["h2","Northwest Italy — Piedmont"],
+["bullet","Climate: CONTINENTAL. Key red grape: NEBBIOLO."],
+["table_h","Wine|Grapes|Style"],
+["table_r","Barolo|Nebbiolo|'King of Italian wines'; full body, very high tannin & acid; tar, roses, leather; ages 10–30+ yrs"],
+["table_r","Barbaresco|Nebbiolo|Similar but lighter, more elegant than Barolo"],
+["table_r","Barbera d'Asti|Barbera|High acid, low tannin, cherry; everyday quality"],
+["table_r","Moscato d'Asti|Moscato Bianco|Low alcohol, sweet, lightly sparkling, floral/peachy"],
+["h2","Northeast Italy — Veneto"],
+["table_h","Wine|Key Facts"],
+["table_r","Soave|Dry white; Garganega grape; light, almond, lemon"],
+["table_r","Valpolicella|Light red; cherry, low tannin; Corvina grape"],
+["table_r","Amarone della Valpolicella|Dried grapes (appassimento); DRY; full body, 15–17% abv; raisin, dark chocolate, tar"],
+["table_r","Recioto della Valpolicella|Same appassimento but fermentation stopped early → SWEET red"],
+["h2","Central Italy — Tuscany"],
+["h3","Chianti & Chianti Classico"],
+["bullet","Grape: SANGIOVESE dominant. Style: dry, high acidity, medium–high tannin, sour cherry, dried herbs, violets, leather."],
+["bullet","Chianti CLASSICO DOCG: historic heartland; better quality. RISERVA: min 27 months. GRAN SELEZIONE: single vineyard, 30 months."],
+["h3","Brunello di Montalcino (DOCG)"],
+["bullet","100% Sangiovese. Very long ageing requirement (5 years). Full body, very high tannin and acid, dark cherry, leather, tobacco. Ages 20+ years."],
+["h3","Super Tuscans (IGT)"],
+["bullet","IGT wines using INTERNATIONAL grapes (Cab Sauv, Merlot, Cab Franc) in Tuscany."],
+["bullet","Sassicaia (Cabernet Sauvignon), Ornellaia, Masseto (Merlot), Tignanello (Sangiovese + Cab Sauv)."],
+["h2","Southern Italy & Islands"],
+["table_h","Region|Wine|Key Grape|Style"],
+["table_r","Campania|Taurasi|Aglianico|Full, tannic, dark fruit"],
+["table_r","Campania|Greco di Tufo|Greco|Dry white; almond, peach"],
+["table_r","Puglia|Primitivo di Manduria|Primitivo (=Zinfandel)|Rich, full, high alcohol"],
+["table_r","Sicily|Nero d'Avola|Nero d'Avola|Full body, dark fruit"],
+["note","🔑 KEY ITALIAN FACTS\n• Barolo/Barbaresco = Nebbiolo; Piedmont; very tannic and acidic.\n• Chianti/Brunello = Sangiovese; Tuscany.\n• Amarone = dry wine from dried grapes (appassimento); very high alcohol.\n• Super Tuscans = IGT; international varieties in Tuscany.\n• Moscato d'Asti = low alcohol, sweet, lightly sparkling."]]},
+
+ch11:{title:"11. Spain & Portugal",icon:"🇪🇸",content:[
+["h1","Chapter 11 – Wines of Spain and Portugal"],
+["h2","Spain — Overview"],
+["body","Spain has the world's LARGEST AREA of vineyards. Hot, dry climate; high altitude plateaus keep temperatures moderate."],
+["h2","Rioja (DOCa)"],
+["bullet","Spain's most famous red wine region. Grape: TEMPRANILLO dominant, often blended with Garnacha."],
+["table_h","Category|Oak Ageing|Bottle Ageing"],
+["table_r","Joven|Little/none|Release soon after harvest"],
+["table_r","Crianza|Min. 1 year oak|Min. 6 months bottle"],
+["table_r","Reserva|Min. 1 year oak|Min. 2 years bottle"],
+["table_r","Gran Reserva|Min. 2 years oak|Min. 3 years bottle"],
+["bullet","Traditional style: AMERICAN oak → vanilla, coconut, dill. Modern style: French oak → more fruit-forward."],
+["h2","Key Spanish Regions"],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Ribera del Duero|Tempranillo (Tinto Fino)|Full body, darker fruit than Rioja"],
+["table_r","Priorat (DOCa)|Garnacha + Cariñena|Very concentrated, full body, mineral"],
+["table_r","Rías Baixas|Albariño|Crisp, high acid, floral, peach, citrus"],
+["table_r","Rueda|Verdejo|Fresh, dry white; herbal, citrus"],
+["table_r","Cava (Penedès)|Macabeo + Parellada + Xarel-lo|Traditional Method; dry, apple; great value"],
+["h2","Portugal — Key Regions"],
+["table_h","Region|Key Wine/Grape|Style"],
+["table_r","Vinho Verde|Alvarinho (Albariño)|Light, low alcohol, high acid, slight fizz"],
+["table_r","Douro|Table wine + Port; Touriga Nacional|Full body, tannic reds"],
+["table_r","Dão|Touriga Nacional|Medium-full red; elegant"],
+["table_r","Alentejo|Aragonez/Trincadeira|Warm climate; ripe, full reds; good value"],
+["body","VINHO VERDE literally means 'green wine' — referring to its YOUTH, not its colour."],
+["note","🔑 KEY FACTS\n• Rioja = Tempranillo; DOCa; American oak (vanilla/coconut).\n• Rías Baixas = Albariño; northwest Spain; crisp white.\n• Priorat = very concentrated Garnacha; DOCa.\n• Cava = Traditional Method from Penedès/Catalonia.\n• Vinho Verde = light, low alcohol, slightly fizzy; northeast Portugal."]]},
+
+ch12:{title:"12. Germany & Austria",icon:"🇩🇪",content:[
+["h1","Chapter 12 – Wines of Germany and Austria"],
+["h2","Germany — Wine Regions"],
+["table_h","Region|Key Grapes|Notable Feature"],
+["table_r","Mosel|Riesling|Steep slate slopes; lowest abv; most delicate"],
+["table_r","Rheingau|Riesling|Powerful, structured Riesling"],
+["table_r","Rheinhessen|Riesling, Müller-Thurgau|Largest region"],
+["table_r","Pfalz|Riesling, Pinot Noir|Warmer; richer style; good Spätburgunder"],
+["table_r","Baden|Pinot Noir (Spätburgunder)|Warmest; fuller-bodied"],
+["h2","German Riesling Prädikat (Ripeness Scale)"],
+["body","Germany classifies wines primarily by the SUGAR CONTENT OF THE GRAPES AT HARVEST — not necessarily the final sweetness of the wine."],
+["table_h","Prädikat|Style"],
+["table_r","Kabinett|Lightest, lowest alcohol; dry to off-dry; delicate"],
+["table_r","Spätlese|'Late harvest'; richer; dry or medium"],
+["table_r","Auslese|'Selected harvest'; concentrated; medium-sweet"],
+["table_r","Beerenauslese (BA)|Botrytis-affected; intensely sweet; rare"],
+["table_r","Trockenbeerenauslese (TBA)|Individually selected botrytised berries; luscious"],
+["table_r","Eiswein|Frozen grapes at harvest; concentrated, high acidity"],
+["bullet","TROCKEN: legally dry (up to 9 g/L residual sugar)."],
+["bullet","HALBTROCKEN / FEINHERB: off-dry."],
+["bullet","Grosses Gewächs (GG): dry wine from a Grand Cru (Grosse Lage) site."],
+["h2","VDP Classification (Germany)"],
+["table_h","Level|Equivalent to"],
+["table_r","Gutswein|Estate/regional wine"],
+["table_r","Ortswein|Village wine"],
+["table_r","Erste Lage|Premier Cru equivalent"],
+["table_r","Grosse Lage|Grand Cru equivalent"],
+["h2","Austria"],
+["table_h","Grape/Region|Style"],
+["table_r","Grüner Veltliner|Austria's signature white; dry; white pepper, citrus, herbal"],
+["table_r","Riesling (Wachau)|Dry, intense, mineral; among Europe's finest dry Riesling"],
+["table_r","Blaufränkisch|Red; medium-full body; spicy, dark cherry, high acid"],
+["table_r","Zweigelt|Red; juicy, fruity, low tannin; Austria's most planted red"],
+["h3","Wachau Classification (Dry Wines Only)"],
+["table_h","Level|Style"],
+["table_r","Steinfeder|Light, delicate, low alcohol"],
+["table_r","Federspiel|Medium body; elegant"],
+["table_r","Smaragd|Richest, most powerful; high alcohol"],
+["note","🔑 KEY FACTS\n• German Riesling sweetness scale: Kabinett → Spätlese → Auslese → BA → TBA.\n• Trocken = dry; high Prädikat level does NOT mean the wine will be sweet.\n• Austrian Grüner Veltliner = white pepper, citrus, dry.\n• Wachau: Steinfeder (light) → Federspiel → Smaragd (richest).\n• Mosel = lightest, most delicate German Riesling; slate soils."]]},
+
+ch13:{title:"13. USA, Canada & Other Europe",icon:"🌎",content:[
+["h1","Chapter 13 – USA, Canada, and Other European Countries"],
+["h2","California"],
+["h3","Napa Valley"],
+["bullet","MOST FAMOUS US wine region. Climate: Mediterranean. Warm days, cool nights (diurnal range from San Pablo Bay fog)."],
+["bullet","Key wine: CABERNET SAUVIGNON — full body, ripe blackcurrant, blackberry, cedar (oak), high tannin, high alcohol."],
+["bullet","Sub-AVAs: Oakville, Rutherford, Stags Leap District, Howell Mountain."],
+["h3","Sonoma County"],
+["bullet","Larger, more diverse than Napa; coastal influence (cooler)."],
+["bullet","Russian River Valley: excellent PINOT NOIR and Chardonnay. Sonoma Coast: cool; elegant Pinot Noir."],
+["h3","Other California Regions"],
+["table_h","Region|Key Wines"],
+["table_r","Santa Barbara|Pinot Noir, Chardonnay (cool, Burgundian style)"],
+["table_r","Paso Robles|Cabernet Sauvignon, Rhône varieties, Zinfandel"],
+["table_r","Lodi|Old-vine Zinfandel"],
+["h3","Oregon"],
+["bullet","Cool CONTINENTAL climate. Famous for PINOT NOIR — Willamette Valley."],
+["bullet","Style: elegant, lighter than California; red cherry, earth, moderate alcohol."],
+["h3","Washington State"],
+["bullet","Most wine production in COLUMBIA VALLEY (semi-desert; irrigated). Continental climate."],
+["bullet","Key wines: CABERNET SAUVIGNON, MERLOT, Syrah, Riesling, Chardonnay."],
+["h2","Canada"],
+["bullet","Ontario (Niagara Peninsula) and British Columbia (Okanagan Valley)."],
+["bullet","Famous for ICEWINE: made from frozen grapes; intensely sweet, high acidity. Vidal and Riesling are main varieties."],
+["h2","Other Important European Countries"],
+["h3","Greece"],
+["table_h","Wine/Grape|Style"],
+["table_r","Assyrtiko (Santorini)|Dry white; volcanic mineral, high acid, citrus"],
+["table_r","Xinomavro (Naoussa)|Red; high acid, high tannin; complex"],
+["table_r","Agiorgitiko (Nemea)|Soft, fruity red"],
+["h3","Hungary — Tokaj"],
+["bullet","World-famous sweet wine region. Grape: FURMINT + Hárslevelű."],
+["bullet","Tokaji Aszú: made from botrytis-affected berries; measured in PUTTONYOS (3–6 puttonyos = medium to very sweet)."],
+["h3","England & Wales"],
+["bullet","Cool climate. Growing industry — especially SPARKLING WINE (Traditional Method)."],
+["bullet","Chalk soils similar to Champagne. Grapes: Chardonnay, Pinot Noir, Pinot Meunier."],
+["note","🔑 KEY FACTS\n• Napa Valley = Cabernet Sauvignon, full-bodied; diurnal range from bay fog.\n• Oregon Willamette Valley = cool-climate Pinot Noir.\n• Washington Columbia Valley = Cab Sauv, Merlot; big diurnal range.\n• Tokaji Aszú: Furmint; botrytis; measured in Puttonyos.\n• Santorini Assyrtiko: volcanic, high acid, very dry white."]]},
+
+ch14:{title:"14. Australia & New Zealand",icon:"🌏",content:[
+["h1","Chapter 14 – Wines of Australia and New Zealand"],
+["h2","Australia — Key Regions"],
+["h3","South Australia"],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Barossa Valley|Shiraz, Grenache, Cab Sauv|Bold, full-bodied Shiraz; old vines; jammy dark fruit, chocolate, vanilla"],
+["table_r","Eden Valley|Riesling, Shiraz|Cooler; elegant Riesling; lime, petrol"],
+["table_r","Clare Valley|Riesling|Dry, linear Riesling; lime, mineral"],
+["table_r","McLaren Vale|Shiraz, Grenache|Rich, velvety Shiraz; chocolate, dark fruits"],
+["table_r","Coonawarra|Cabernet Sauvignon|Cool; Terra Rossa (red soil); elegant Cab Sauv"],
+["table_r","Adelaide Hills|Sauvignon Blanc, Chardonnay, Pinot|Cool, elevated; crisp whites"],
+["h3","Victoria & New South Wales"],
+["table_h","Region|Key Wines"],
+["table_r","Yarra Valley|Pinot Noir, Chardonnay; cool climate; elegant"],
+["table_r","Rutherglen|Muscat; sticky fortified dessert wines; toffee, raisin"],
+["table_r","Hunter Valley|Semillon (classic; lean, high acid; ages well); Shiraz"],
+["table_r","Margaret River (WA)|Outstanding Cab Sauv–Merlot blends and Chardonnay"],
+["h2","New Zealand — Key Regions"],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Marlborough (South Is.)|Sauvignon Blanc|Benchmark; pungent, high acid, passion fruit, capsicum, gooseberry, elderflower"],
+["table_r","Central Otago (South Is.)|Pinot Noir|Southernmost; intense; dark cherry, spice; continental climate"],
+["table_r","Martinborough|Pinot Noir, Riesling|Cool; earthy Pinot"],
+["table_r","Hawke's Bay (North Is.)|Cab Sauv, Merlot, Syrah|Warm; Gimblett Gravels sub-region; Bordeaux-style reds"],
+["table_r","Waipara Valley|Riesling, Pinot Noir|Cool; fine whites"],
+["note","🔑 KEY FACTS\n• Barossa Valley = old-vine Shiraz; full body, jammy, dark fruit.\n• Clare/Eden Valleys = benchmark dry Australian Riesling.\n• Coonawarra = Terra Rossa soils; elegant Cabernet Sauvignon.\n• Marlborough NZ = world benchmark Sauvignon Blanc.\n• Central Otago = southernmost major wine region; intense Pinot Noir."]]},
+
+ch15:{title:"15. S. Africa, Chile & Argentina",icon:"🌍",content:[
+["h1","Chapter 15 – South Africa, Chile, and Argentina"],
+["h2","South Africa"],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Stellenbosch|Cab Sauv, Merlot, Chenin Blanc, Syrah|Full-bodied reds; most prestigious district"],
+["table_r","Swartland|Chenin Blanc, Syrah, Grenache|Old bush vines; artisan producers"],
+["table_r","Constantia|Sauvignon Blanc|Cool, maritime; historic area"],
+["table_r","Elgin|Sauvignon Blanc, Pinot Noir|Very cool; excellent whites"],
+["h3","Signature Grapes"],
+["bullet","PINOTAGE: South Africa's own grape (Pinot Noir × Cinsault). Dark, smoky, earthy, plummy."],
+["bullet","CHENIN BLANC: South Africa's most planted white grape; range from crisp/dry to rich/oaked to sweet."],
+["h2","Chile"],
+["body","Chile has ideal conditions: Andes to the east, Pacific to the west. Very few vine diseases (phylloxera largely absent)."],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Casablanca Valley|Sauvignon Blanc, Chardonnay, Pinot Noir|Very cool (Pacific); crisp whites and delicate reds"],
+["table_r","Maipo Valley|Cabernet Sauvignon|Warmest; classic structured Cab Sauv"],
+["table_r","Colchagua/Cachapoal|Carménère, Cab Sauv|Rich, full reds"],
+["table_r","Bío-Bío/Malleco|Pinot Noir, Riesling|Cool southern regions"],
+["h3","Carménère — Chile's Signature Grape"],
+["bullet","Originally from Bordeaux (now almost extinct there). Style: full body, medium tannin, green bell pepper, red/black fruit, chocolate, spice."],
+["h2","Argentina"],
+["body","Largest wine producer in South America. Key regions at high altitude in the Andes foothills → excellent diurnal range."],
+["table_h","Region|Key Grapes|Style"],
+["table_r","Mendoza|Malbec, Cab Sauv, Bonarda|Argentina's largest; 700–1200m altitude"],
+["table_r","Luján de Cuyo|Malbec|Classic Malbec; concentrated"],
+["table_r","Uco Valley|Malbec, Cab Franc|High altitude (1000–1500m); elegant Malbec"],
+["table_r","Salta/Cafayate|Torrontés, Malbec|Very high (1700–3000m); Torrontés benchmark"],
+["h3","Malbec & Torrontés"],
+["bullet","MALBEC: full body, velvety tannins, dark plum, blackberry, violet, chocolate. Originally from Cahors, France."],
+["bullet","TORRONTÉS: aromatic (rose, lychee, peach) but DRY on palate. Best from Salta at high altitude."],
+["note","🔑 KEY FACTS\n• Pinotage = South Africa's own grape (Pinot Noir × Cinsault).\n• Carménère = Chile's signature red; originally from Bordeaux.\n• Malbec = Argentina's signature red; full body, velvety tannin, violet.\n• Casablanca = cool coastal Chile; crisp Sauvignon Blanc, Pinot Noir.\n• Maipo = warmest Chile; classic Cabernet Sauvignon."]]},
+
+ch16:{title:"16. Sparkling Wines",icon:"✨",content:[
+["h1","Chapter 16 – Sparkling Wines of the World"],
+["h2","Champagne (France)"],
+["bullet","Traditional Method. Blend of Pinot Noir + Pinot Meunier + Chardonnay."],
+["bullet","Yeasty, biscuity, toasty complexity from lees ageing."],
+["bullet","Blanc de Blancs = 100% Chardonnay. Blanc de Noirs = 100% black grapes."],
+["h2","Crémant (France)"],
+["table_h","Crémant|Region|Main Grapes"],
+["table_r","Crémant d'Alsace|Alsace|Pinot Blanc, Auxerrois, Riesling"],
+["table_r","Crémant de Bourgogne|Burgundy|Chardonnay, Pinot Noir"],
+["table_r","Crémant de Loire|Loire Valley|Chenin Blanc, Chardonnay"],
+["h2","Cava (Spain)"],
+["bullet","Traditional Method from Penedès, Catalonia. Grapes: Macabeo + Parellada + Xarel-lo."],
+["bullet","Cava Gran Reserva: min. 30 months on lees; vintage dated. Very good value."],
+["h2","Prosecco (Italy)"],
+["bullet","TANK METHOD (Charmat). Fresh, fruity, easy-drinking. Grape: GLERA."],
+["bullet","Prosecco DOC: entry-level. Prosecco DOCG = Conegliano Valdobbiadene (higher quality)."],
+["bullet","Most common sweetness: Extra Dry (12–17 g/L — slightly sweet sensation)."],
+["bullet","CARTIZZE: prestigious single-vineyard sub-zone of Valdobbiadene."],
+["h2","Franciacorta (Italy)"],
+["bullet","Traditional Method. DOCG. From Lombardy. Grapes: Chardonnay + Pinot Nero + Pinot Bianco. Italy's premier sparkling wine."],
+["h2","New World Sparkling"],
+["table_h","Region|Method|Key Grapes"],
+["table_r","Cap Classique (South Africa)|Traditional|Chardonnay, Pinot Noir"],
+["table_r","Tasmania / Yarra Valley (Aus)|Traditional|Chardonnay, Pinot Noir"],
+["table_r","Marlborough (NZ)|Traditional|Chardonnay, Pinot Noir"],
+["table_r","California|Traditional|Chardonnay, Pinot Noir"],
+["note","🔑 SPARKLING WINE KEY FACTS\n• Traditional Method: Champagne, Cava, Crémant, Franciacorta, Cap Classique.\n• Tank Method: Prosecco (Glera grape).\n• Prosecco Extra Dry = slightly sweet (12–17 g/L).\n• Cava Gran Reserva = minimum 30 months on lees; vintage dated.\n• Blanc de Blancs = 100% Chardonnay; Blanc de Noirs = 100% black grapes."]]},
+
+ch17:{title:"17. Fortified Wines",icon:"🍾",content:[
+["h1","Chapter 17 – Fortified Wines of the World"],
+["h2","Port (Portugal)"],
+["body","Produced in the DOURO VALLEY. Spirit added DURING fermentation → kills yeast → retains residual sugar."],
+["h3","Ruby Port Styles"],
+["table_h","Style|Description"],
+["table_r","Ruby|Basic; young; red fruit, simple; inexpensive"],
+["table_r","Reserve Ruby|Richer; selected lots; fuller, more complex"],
+["table_r","Late Bottled Vintage (LBV)|Single year; bottled after 4–6 years; ready to drink without decanting (filtered)"],
+["table_r","Vintage Port|Single exceptional year; bottled after 2 years; needs 10–30+ years in bottle; MUST DECANT"],
+["table_r","Single Quinta|Vintage from single estate; declared in lesser years"],
+["h3","Tawny Port Styles"],
+["table_h","Style|Description"],
+["table_r","Aged Tawny (10yr/20yr/30yr)|Blend of wines averaging stated age; complex; caramel, dried fruit, walnut, orange peel"],
+["table_r","Colheita|Single vintage Tawny; aged 7+ years in wood"],
+["table_r","White Port|From white grapes; dry to sweet; serve chilled"],
+["h2","Sherry (Spain)"],
+["body","Produced around JEREZ DE LA FRONTERA. Spirit added AFTER fermentation (base wine is DRY). Grape: PALOMINO."],
+["bullet","SOLERA SYSTEM: wine transferred through layers of barrels (criaderas), blending old and young wine."],
+["table_h","Style|Key Feature|Taste"],
+["table_r","Fino|Protected by flor|Pale, dry, almond, saline"],
+["table_r","Manzanilla|Sanlúcar; sea flor|Fino + saline/marine character"],
+["table_r","Amontillado|Flor dies; oxidative|Amber, nutty, dry to medium"],
+["table_r","Palo Cortado|Rare; flor dies early|Between Amontillado and Oloroso"],
+["table_r","Oloroso|No flor; oxidative|Dark, rich, walnut, raisin; dry"],
+["table_r","Cream|Sweetened Oloroso|Sweet, dark, raisiny"],
+["table_r","Pedro Ximénez (PX)|Dried PX grapes|Intensely sweet, black, syrupy"],
+["h2","Madeira (Portugal)"],
+["table_h","Style|Grape|Sweetness"],
+["table_r","Sercial|Sercial|Dry"],
+["table_r","Verdelho|Verdelho|Medium-dry"],
+["table_r","Bual|Bual/Boal|Medium-sweet"],
+["table_r","Malmsey|Malvasia|Sweet"],
+["bullet","All Madeira: high acidity, rancio character, extremely long-lived. ESTUFAGEM (intentional oxidation/heat treatment)."],
+["h2","Other Fortified Wines"],
+["table_h","Wine|Country|Key Facts"],
+["table_r","Muscat de Beaumes de Venise|France|VDN; sweet, golden, peachy"],
+["table_r","Banyuls|France|Grenache; sweet red VDN"],
+["table_r","Rutherglen Muscat|Australia|Intensely sweet, toffee, raisin"],
+["table_r","Marsala|Italy|Range from dry to sweet; cooking use"],
+["note","🔑 KEY FORTIFIED FACTS\n• Port: spirit added DURING fermentation → sweet.\n• Sherry: spirit added AFTER fermentation → dry base.\n• Vintage Port: single year; sediment; MUST DECANT.\n• Aged Tawny (10yr/20yr): blended to average age; no vintage; ready to drink.\n• Fino/Manzanilla: serve CHILLED; drink fresh (deteriorates quickly).\n• Madeira: virtually indestructible; extremely long-lived."]]},
+
+ch18:{title:"18. Keeping & Serving Wine",icon:"🥂",content:[
+["h1","Chapter 18 – Keeping and Serving Wine"],
+["h2","Storing Wine"],
+["bullet","TEMPERATURE: ideally 10–15°C; constant temperature is more important than specific value."],
+["bullet","HUMIDITY: 60–80% prevents corks from drying out."],
+["bullet","DARKNESS: UV light causes premature ageing."],
+["bullet","VIBRATION: minimise (can disturb sediment and age wine prematurely)."],
+["bullet","POSITION: cork-sealed bottles stored on their side."],
+["h2","Service Temperatures"],
+["table_h","Wine Style|Temp|°F"],
+["table_r","Sweet wines (botrytis, ice)|6–8°C|43–46°F"],
+["table_r","Sparkling wines|6–10°C|43–50°F"],
+["table_r","Fino & Manzanilla Sherry|7–10°C|45–50°F"],
+["table_r","Light/medium dry whites & rosé|7–10°C|45–50°F"],
+["table_r","Full-bodied whites (oaked)|10–13°C|50–55°F"],
+["table_r","Light-bodied reds (Beaujolais)|13°C|55°F"],
+["table_r","Medium/full-bodied reds|15–18°C|59–64°F"],
+["table_r","Vintage Port, Oloroso Sherry|15–18°C|59–64°F"],
+["h2","Decanting"],
+["bullet","1. To SEPARATE SEDIMENT from old red wines and Vintage Port."],
+["bullet","2. To AERATE young tannic reds — allows wine to open up."],
+["bullet","Stand bottle upright for several hours to allow sediment to settle. Pour slowly over a candle until sediment reaches neck. Stop pouring."],
+["h2","Opening Sparkling Wine — Safety"],
+["bullet","Chill to below 10°C to reduce pressure."],
+["bullet","Remove foil and wire cage — keep thumb/hand on cork at ALL TIMES."],
+["bullet","Tilt bottle at 45°. Hold cork steady, turn the BOTTLE (not the cork)."],
+["bullet","Aim for a soft 'phut', not a loud pop — prevents foam loss and potential injury."],
+["h2","Wine Faults — Service Detection"],
+["table_h","Fault|Cause|What You Notice"],
+["table_r","TCA (Cork taint)|Contaminated cork|Wet cardboard, musty cellar"],
+["table_r","Oxidation|Excess oxygen exposure|Sherry-like, flat, stale"],
+["table_r","Reduction|Too little oxygen|Struck match, rubber"],
+["table_r","Volatile Acidity|Acetic acid|Vinegar, nail polish"],
+["table_r","Heat Damage|Poor storage/transport|Cooked, jammy; cork may protrude"],
+["h2","Preserving Opened Wine"],
+["bullet","VACUUM PUMP: removes air from bottle; extends life 2–3 days."],
+["bullet","INERT GAS (Blanket): argon or nitrogen pushed into bottle displaces oxygen."],
+["bullet","REFRIGERATOR: slows oxidation. Bring reds back to service temp before serving."],
+["note","🔑 KEY SERVICE POINTS\n• Finest red wines served at 15–18°C (NOT 'room temperature' in a warm room).\n• Vintage Port and red wines with sediment MUST be decanted.\n• Fino Sherry: serve cold (7–10°C) and consume quickly — like white wine.\n• Sparkling: turn bottle, not cork. Soft phut = proper technique.\n• Humidity 60–80% + constant temperature = ideal cellar conditions."]]}
+};
+
+const INDEX_TERMS = [
+["Acidity – detection on palate","ch5"],["Adelaide Hills","ch14"],["Aged Tawny Port","ch17"],
+["Albariño / Rías Baixas","ch11"],["Alsace – grape varieties","ch8"],["Alsace – VT & SGN","ch8"],
+["Amarone della Valpolicella","ch10"],["American Viticultural Areas (AVA)","ch13"],["Amontillado Sherry","ch17"],
+["Appassimento (dried grape method)","ch10"],["Argentina – Malbec","ch15"],["Argentina – Mendoza","ch15"],
+["Argentina – Torrontés","ch15"],["Assyrtiko / Santorini","ch13"],["Austria – Grüner Veltliner","ch12"],
+["Austria – Wachau classification","ch12"],["Balance (quality indicator)","ch1"],["Bandol (Mourvèdre)","ch9"],
+["Barbaresco (Nebbiolo)","ch10"],["Barolo (Nebbiolo)","ch10"],["Barossa Valley (Shiraz)","ch14"],
+["Barrel fermentation (white wine)","ch3"],["Bâtonnage (lees stirring)","ch3"],["Beaujolais – carbonic maceration","ch7"],
+["Beaujolais – Crus","ch7"],["Beaujolais Nouveau","ch7"],["Biodynamic viticulture","ch2"],
+["Blanc de Blancs (Champagne)","ch9"],["Blanc de Noirs (Champagne)","ch9"],["Bordeaux – 1855 Classification","ch6"],
+["Bordeaux – Left Bank vs Right Bank","ch6"],["Bordeaux – Sauternes/Barsac","ch6"],["Botrytis Cinerea (Noble Rot)","ch6"],
+["Brunello di Montalcino","ch10"],["Burgundy – Grand Cru","ch7"],["Burgundy – Côte de Nuits","ch7"],
+["Burgundy – Côte de Beaune","ch7"],["Burgundy classification","ch7"],["Cahors (Malbec)","ch6"],
+["Canada – Icewine","ch13"],["Carbonic maceration","ch7"],["Carménère (Chile)","ch15"],
+["Cartizze (Prosecco)","ch16"],["Cava (Spain)","ch16"],["Central Otago (Pinot Noir)","ch14"],
+["Chablis","ch7"],["Champagne – NV vs Vintage","ch9"],["Champagne – sweetness scale","ch4"],
+["Champagne – sub-regions","ch9"],["Châteauneuf-du-Pape","ch8"],["Chenin Blanc (South Africa)","ch15"],
+["Chianti / Chianti Classico","ch10"],["Chile – Casablanca Valley","ch15"],["Chile – Maipo Valley","ch15"],
+["Clare Valley (Riesling)","ch14"],["Colour – ageing and appearance","ch5"],["Complexity (quality indicator)","ch1"],
+["Concentration (quality indicator)","ch1"],["Conclusions (SAT)","ch5"],["Condrieu (Viognier)","ch8"],
+["Continental climate","ch2"],["Coonawarra (Cab Sauv)","ch14"],["Cork taint (TCA)","ch5"],
+["Côte de Beaune","ch7"],["Côte de Nuits","ch7"],["Côtes du Rhône","ch8"],
+["Crémant (France)","ch16"],["Decanting","ch18"],["Diurnal range","ch2"],
+["DOCG (Italy)","ch10"],["Dosage (sparkling wine)","ch4"],["England – sparkling wine","ch13"],
+["Fermentation vessels – oak vs steel","ch3"],["Fino Sherry","ch17"],["Finish / Length (quality indicator)","ch1"],
+["Flor (Sherry)","ch4"],["Franciacorta (Italy)","ch16"],["Germany – Mosel","ch12"],
+["Germany – Prädikat classification","ch12"],["Germany – Riesling styles","ch12"],["Gewurztraminer (Alsace)","ch8"],
+["Glassware (service)","ch18"],["Grenache – Southern Rhône","ch8"],["Grüner Veltliner (Austria)","ch12"],
+["Hermitage (Syrah)","ch8"],["Hunter Valley (Semillon)","ch14"],["IGT (Italy) / Super Tuscans","ch10"],
+["Languedoc-Roussillon","ch9"],["LBV Port","ch17"],["Lees stirring (bâtonnage)","ch3"],
+["Loire Valley – overview","ch8"],["Mâconnais / Pouilly-Fuissé","ch7"],["Madeira (Portugal)","ch17"],
+["Malolactic fermentation (MLF)","ch3"],["Manzanilla Sherry","ch17"],["Margaret River (Australia)","ch14"],
+["Maritime climate","ch2"],["Marlborough – Sauvignon Blanc","ch14"],["Mediterranean climate","ch2"],
+["Mendoza (Argentina)","ch15"],["Meursault (Chardonnay)","ch7"],["Mosel (Germany)","ch12"],
+["Napa Valley (California)","ch13"],["Nebbiolo (Barolo/Barbaresco)","ch10"],["Noble Rot (Botrytis)","ch6"],
+["Northern Rhône (Syrah)","ch8"],["Oak – effect on wine","ch3"],["Oloroso Sherry","ch17"],
+["Oregon – Pinot Noir","ch13"],["Oxidation (fault)","ch5"],["Pedro Ximénez (PX) Sherry","ch17"],
+["Pinotage (South Africa)","ch15"],["Port – styles overview","ch17"],["Port – Vintage Port","ch17"],
+["Prädikat (Germany)","ch12"],["Prestige Cuvée (Champagne)","ch9"],["Price – factors affecting","ch1"],
+["Priorat (Spain)","ch11"],["Prosecco (Italy)","ch16"],["Provence – rosé","ch9"],
+["Quality indicators (WSET Level 2)","ch1"],["Quality scale (Faulty to Outstanding)","ch1"],
+["Reduction (fault)","ch5"],["Ribera del Duero","ch11"],["Riddling (remuage)","ch4"],
+["Rioja ageing categories","ch11"],["Roussillon – VDN","ch9"],["Rutherglen Muscat (Australia)","ch17"],
+["Saignée method (rosé)","ch3"],["Sangiovese (Chianti/Brunello)","ch10"],["SAT – Conclusions","ch5"],
+["SAT – Nose (development/faults)","ch5"],["SAT – Palate order","ch5"],["Sauternes (botrytis white)","ch6"],
+["Sekt (Germany/Austria)","ch16"],["Service temperatures","ch18"],["Sherry – Solera system","ch4"],
+["Sherry styles","ch17"],["Soil types – overview","ch2"],["Sonoma County (California)","ch13"],
+["South Africa – overview","ch15"],["Southern Rhône (Grenache blends)","ch8"],["Stellenbosch","ch15"],
+["Storing wine","ch18"],["Style – factors influencing","ch1"],["Super Tuscans (Italy)","ch10"],
+["Tank method (Charmat)","ch4"],["Tannin – texture (SAT Level 2)","ch5"],["Taurasi (Aglianico)","ch10"],
+["Tertiary aromas (bouquet)","ch5"],["Tokaji / Tokaj (Hungary)","ch13"],["Torrontés (Argentina)","ch15"],
+["Traditional method","ch4"],["Typicity (quality indicator)","ch1"],["Uco Valley (Argentina)","ch15"],
+["Amarone / Valpolicella","ch10"],["VDP Classification (Germany)","ch12"],["Vendange Tardive (Alsace)","ch8"],
+["Verdejo (Rueda, Spain)","ch11"],["Vinho Verde (Portugal)","ch11"],["Vintage Port","ch17"],
+["Volatile Acidity (fault)","ch5"],["Vouvray (Chenin Blanc)","ch8"],["Wachau classification","ch12"],
+["Washington State (USA)","ch13"],["Wine faults – detection","ch18"],["Yarra Valley (Australia)","ch14"],
+["Yield management","ch2"]
+];
+
+// ════════════════════════════════════════════════════════════════
+//  RENDER ENGINE
+// ════════════════════════════════════════════════════════════════
+let currentView = 'chapter';
+let currentKey  = 'intro';
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderContent(content) {
+  let html = '';
+  let inTable = false;
+  let tableHeaders = [];
+
+  const flushTable = () => {
+    if (inTable) { html += '</tbody></table></div>'; inTable = false; tableHeaders = []; }
+  };
+
+  for (const [tag, text] of content) {
+    if (tag === 'table_h') {
+      flushTable();
+      tableHeaders = text.split('|').map(h => h.trim());
+      html += '<div class="table-wrap"><table class="ch-table"><thead><tr>';
+      for (const h of tableHeaders) html += `<th>${escHtml(h)}</th>`;
+      html += '</tr></thead><tbody>';
+      inTable = true;
+      continue;
+    }
+    if (tag === 'table_r') {
+      const cols = text.split('|').map(c => c.trim());
+      html += '<tr>';
+      for (const c of cols) html += `<td>${escHtml(c)}</td>`;
+      html += '</tr>';
+      continue;
+    }
+    flushTable();
+
+    const t = escHtml(text);
+    switch (tag) {
+      case 'h1':    html += `<h1 class="ch-h1">${t}</h1>`; break;
+      case 'h2':    html += `<h2 class="ch-h2">${t}</h2>`; break;
+      case 'h3':    html += `<h3 class="ch-h3">${t}</h3>`; break;
+      case 'body':  html += `<p class="ch-body">${t}</p>`; break;
+      case 'bullet':html += `<div class="ch-bullet"><span class="dot">•</span><span>${t}</span></div>`; break;
+      case 'note':  html += `<div class="ch-note">${t.replace(/\n/g,'<br>')}</div>`; break;
+    }
+  }
+  flushTable();
+  return html;
+}
+
+function showChapter(key) {
+  currentView = 'chapter';
+  currentKey  = key;
+  document.getElementById('search-input').value = '';
+
+  // Sidebar highlight
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('btn-' + key);
+  if (btn) btn.classList.add('active');
+  document.getElementById('btn-index').classList.remove('active');
+
+  // Panels
+  document.getElementById('index-view').style.display  = 'none';
+  document.getElementById('search-view').style.display = 'none';
+  const cv = document.getElementById('chapter-view');
+  cv.style.display = 'block';
+
+  const ch = CHAPTERS[key];
+  cv.innerHTML = `<div class="fade-in">${renderContent(ch.content)}</div>`;
+  document.getElementById('content').scrollTop = 0;
+}
+
+function showIndex() {
+  currentView = 'index';
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-index').classList.add('active');
+
+  document.getElementById('chapter-view').style.display = 'none';
+  document.getElementById('search-view').style.display  = 'none';
+  document.getElementById('index-view').style.display   = 'block';
+  document.getElementById('index-filter').value = '';
+  buildIndexGrid('');
+  document.getElementById('content').scrollTop = 0;
+}
+
+function buildIndexGrid(q) {
+  const grid = document.getElementById('index-grid');
+  const lower = q.toLowerCase();
+  const filtered = INDEX_TERMS.filter(([term]) => term.toLowerCase().includes(lower));
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="color:#888;font-family:sans-serif;font-style:italic;">No matching terms.</p>';
+    return;
+  }
+  grid.innerHTML = filtered.map(([term, key]) => {
+    const dest = CHAPTERS[key] ? CHAPTERS[key].title : key;
+    return `<div class="idx-item" onclick="showChapter('${key}')">
+      <span>${escHtml(term)}</span>
+      <span class="idx-dest">→ ${escHtml(dest)}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterIndex() {
+  buildIndexGrid(document.getElementById('index-filter').value);
+}
+
+function clearIndexFilter() {
+  document.getElementById('index-filter').value = '';
+  buildIndexGrid('');
+}
+
+function showSearch(q) {
+  currentView = 'search';
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-index').classList.remove('active');
+
+  document.getElementById('chapter-view').style.display = 'none';
+  document.getElementById('index-view').style.display   = 'none';
+  document.getElementById('search-view').style.display  = 'block';
+
+  const list = document.getElementById('search-results-list');
+  if (q.length < 2) { list.innerHTML = ''; return; }
+
+  const lower = q.toLowerCase();
+  const seen  = new Set();
+  let html = '';
+
+  for (const [term, key] of INDEX_TERMS) {
+    if (term.toLowerCase().includes(lower) && !seen.has(key)) {
+      const dest = CHAPTERS[key] ? CHAPTERS[key].title : key;
+      html += `<div class="srch-item" onclick="showChapter('${key}')">
+        <span>📑 ${escHtml(term)}</span>
+        <span class="srch-dest">→ ${escHtml(dest)}</span>
+      </div>`;
+      seen.add(key);
+    }
+  }
+  for (const [key, ch] of Object.entries(CHAPTERS)) {
+    if (seen.has(key)) continue;
+    for (const [, text] of ch.content) {
+      if (typeof text === 'string' && text.toLowerCase().includes(lower)) {
+        html += `<div class="srch-item" onclick="showChapter('${key}')">
+          <span>📖 Content match in: ${escHtml(ch.title)}</span>
+        </div>`;
+        seen.add(key);
+        break;
+      }
+    }
+  }
+  if (!html) html = `<p id="no-results">No results found for "<strong>${escHtml(q)}</strong>".</p>`;
+  list.innerHTML = html;
+  document.getElementById('content').scrollTop = 0;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════════════
+(function init() {
+  const sidebar = document.getElementById('sidebar');
+
+  // Build sidebar buttons (after the label, before the divider already in HTML)
+  const divider = sidebar.querySelector('.sidebar-divider');
+  for (const [key, ch] of Object.entries(CHAPTERS)) {
+    const btn = document.createElement('button');
+    btn.className = 'ch-btn';
+    btn.id = 'btn-' + key;
+    btn.textContent = ch.icon + '\u00A0 ' + ch.title;
+    btn.onclick = () => showChapter(key);
+    sidebar.insertBefore(btn, divider);
+  }
+
+  // Search wiring
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.trim();
+    if (q.length >= 2) showSearch(q);
+    else if (q.length === 0) showChapter(currentKey);
+  });
+
+  // Load intro
+  showChapter('intro');
+})();
+</script>
+</body>
+</html>
